@@ -1,0 +1,16 @@
+*.gem
+*.rbc
+.bundle
+.config
+coverages
+rdoc
+spec/reports
+tmp
+
+# YARD artifacts
+.yardoc
+_yardoc
+doc/
+
+.DS_Store
+*~
