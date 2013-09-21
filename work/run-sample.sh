@@ -9,20 +9,23 @@ echo "#-- remove srcFolder, destFolder"
 echo "#-- srcFoler を作成しました"
 
 cd srcFolder
-\tree -Qfaplug cont > ../tree-cont.txt
+\tree -iQfaplug cont > ../tree-cont.txt
 echo "#-- srcFoler/cont の tree 結果を作成しました (tree-cont.txt)"
 
 \chmod -R 777 cont
 \chown -R root cont
 \chgrp -R wheel cont
 echo "#-- srcFoler/cont のファイル属性(オーナー、グループ、プロテクション) を (root, wheel, 777) に変更しました。"
+\echo > XXX.txt
+echo "#-- srcFoler/cont/XXX.txt を追加しました。"
+echo "#-- [srcFoler/cont/XXX.txt は ファイル一覧表には含まれていないので、 destFolder/cont には 配置されません。]"
 
 cd ..
 ruby ../lib/treedeploy/treedeploy.rb srcFolder destFolder cont tree-cont.txt
 echo "#-- srcFoldle/cont 内容を destFolder/cont に treedeploy をつかって複製しました"
 
 cd destFolder
-tree -Qfaplug cont > ../tree-cont-dest.txt
+tree -iQfaplug cont > ../tree-cont-dest.txt
 echo "#-- destFolder/cont の tree 結果を作成しました (tree-cont-dest.txt)"
 
 cd ..

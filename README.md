@@ -18,12 +18,32 @@
 配置ファイルイメージを実際につくりあげてから、tree コマンドでファイル一覧をとれば、それをそのままファイル配置ツールに利用できます。
 したがって、ファイルの列挙 と その続映の一覧を作成を人手で行った場合に比べて、漏れ や ファイル属性の記載間違いが発生する可能性が少なくなります。
 
+インストール
+============
+
+    $ git clone https://github.com/katoy/treedeploy.git
+    $ cd treedeploy
+    $ bundle install
+    $ rake build
+    $ gem install pkg/*.gem
+
+
+アンインストール
+================
+
+    $ gem uninstall treedeploy
+
+
 使い方
 ======
 
-$ ruby treedeploy.rb コピー元の親フォルダ名  抽出先の親フォルダ名  対象フォルダ名  吹き出すファイル一覧ファイル名
+    $ treedeploy deploy コピー元の親フォルダ名  抽出先の親フォルダ名  対象フォルダ名  吹き出すファイル一覧ファイル名
+    
+    gem install しないで、実行する場合:
+    $ ruby lib/treedeploy/treedeploy.rb コピー元の親フォルダ名  抽出先の親フォルダ名  対象フォルダ名  吹き出すファイル一覧ファイル名
 
-例：  ruby lib/treedeploy/treedeploy.rb srcFolder destFolder cont  tree.txt
+
+例：  $ treedeploy deploy srcFolder destFolder cont  tree.txt
 
 src/cont 以下のファイル中から, tree.txt 中に列挙されたファイルだけが、tree.txt 中で指定された属性に変更されながらdestFolder/cont 以下に配置されます。
 (srcFilder/cont/* -> destFoldr/cont/* にファイルが配置されます)
