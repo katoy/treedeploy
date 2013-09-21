@@ -1,7 +1,7 @@
 
 [![Build Status](https://travis-ci.org/katoy/treedeploy.png?branch=master)](https://travis-ci.org/katoy/treedeploy)
 [![Dependency Status](https://gemnasium.com/katoy/treedeploy.png)](https://gemnasium.com/katoy/treedeploy)
-[![Coverage Status](https://coveralls.io/repos/katoy/treedeploy/badge.png)](https://coveralls.io/r/katoy/treedeploy)
+[![Coverage Status](https://coveralls.io/repos/katoy/treedeploy/badge.png?branch=master)](https://coveralls.io/r/katoy/treedeploy?branch=master)
 
 
 これは、File 階層中の部分セットを抜き出し かつ ファイルの属性(オーナー、グループ、プロテクション) を設定するコマンドラインツールです。
