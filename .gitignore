@@ -2,7 +2,7 @@
 *.rbc
 .bundle
 .config
-coverages
+coverage
 rdoc
 spec/reports
 tmp

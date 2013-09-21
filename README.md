@@ -1,6 +1,7 @@
 
 [![Build Status](https://travis-ci.org/katoy/treedeploy.png?branch=master)](https://travis-ci.org/katoy/treedeploy)
 [![Dependency Status](https://gemnasium.com/katoy/treedeploy.png)](https://gemnasium.com/katoy/treedeploy)
+[![Coverage Status](https://coveralls.io/repos/katoy/treedeploy/badge.png)](https://coveralls.io/r/katoy/treedeploy)
 
 
 これは、File 階層中の部分セットを抜き出し かつ ファイルの属性(オーナー、グループ、プロテクション) を設定するコマンドラインツールです。
@@ -26,3 +27,15 @@
  ./work/run-sample.sh で、ファイル一覧の作成、それを利用して、別フォルダにファイルを配置する例を試すことができます。
 
 
+rake のタスク
+==============
+* rake spec
+
+テストを実行します。
+coverage/index.html, coverage/rdoc/index.html でカバレッジ結果を閲覧できます。
+
+* rake yard
+
+$ yard server で生成されたドキュメトを http://localhost:8808 で閲覧できます。  
+
+doc/index.html  を open することでも閲覧できます。  
