@@ -1,3 +1,9 @@
+PATH
+  remote: .
+  specs:
+    treedeploy (0.0.1)
+      thor
+
 GEM
   remote: https://rubygems.org/
   specs:
@@ -10,6 +16,8 @@ GEM
     diff-lcs (1.2.4)
     mime-types (1.25)
     multi_json (1.8.0)
+    rake (10.1.0)
+    redcarpet (1.17.2)
     rest-client (1.6.7)
       mime-types (>= 1.16)
     rspec (2.14.1)
@@ -36,8 +44,12 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
+  bundler (~> 1.3)
   coveralls
+  rake
+  redcarpet
   rspec
   simplecov
   simplecov-rcov
+  treedeploy!
   yard

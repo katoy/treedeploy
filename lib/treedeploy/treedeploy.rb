@@ -7,7 +7,7 @@ require 'rubygems'
 require 'fileutils'
 require 'pp'
 
-require File.join(File.dirname(__FILE__), 'deploy')
+require File.join(File.expand_path(File.dirname(__FILE__)), 'deploy')
 
 if __FILE__ == $0
 

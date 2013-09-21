@@ -23,7 +23,7 @@
 
 $ ruby treedeploy.rb コピー元の親フォルダ名  抽出先の親フォルダ名  対象フォルダ名  吹き出すファイル一覧ファイル名
 
-例：  ruby treedeploy srcFolder destFolder cont  tree.txt
+例：  ruby lib/treedeploy/treedeploy.rb srcFolder destFolder cont  tree.txt
 
 src/cont 以下のファイル中から, tree.txt 中に列挙されたファイルだけが、tree.txt 中で指定された属性に変更されながらdestFolder/cont 以下に配置されます。
 (srcFilder/cont/* -> destFoldr/cont/* にファイルが配置されます)
@@ -61,3 +61,9 @@ coverage/index.html, coverage/rdoc/index.html でカバレッジ結果を閲覧�
 
 $ yard server で生成されたドキュメトを http://localhost:8808 で閲覧できます。  
 doc/index.html  を open することでも閲覧できます。  
+
+TODO
+=====
+
+* gem 化
+

@@ -1,12 +1,10 @@
-#!/usr/bin/env ruby
 # -*- coding: utf-8 -*-
-
 # 2013-09-09 katoy
 
 require 'rubygems'
 require 'pp'
 
-require File.join(File.dirname(__FILE__), 'file_mode')
+require File.join(File.expand_path(File.dirname(__FILE__)), 'file_mode')
 
 class Deploy
 

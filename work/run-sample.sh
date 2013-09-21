@@ -18,7 +18,7 @@ echo "#-- srcFoler/cont の tree 結果を作成しました (tree-cont.txt)"
 echo "#-- srcFoler/cont のファイル属性(オーナー、グループ、プロテクション) を (root, wheel, 777) に変更しました。"
 
 cd ..
-ruby ../treedeploy.rb srcFolder destFolder cont tree-cont.txt
+ruby ../lib/treedeploy/treedeploy.rb srcFolder destFolder cont tree-cont.txt
 echo "#-- srcFoldle/cont 内容を destFolder/cont に treedeploy をつかって複製しました"
 
 cd destFolder
