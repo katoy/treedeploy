@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 require 'spec_helper'
+require 'tempfile'
 
 describe FileMode do
 
@@ -37,26 +38,54 @@ describe FileMode do
   include FileMode
 
   specify 'sym_to_oct' do
+    # 全パターンのテスト
     PATTERNS.each do |data|
       expect(data[1]).to eq(sym_to_oct(data[0]))
     end
   end
 
   specify 'oct_to_sym' do
+    # 全パターンのテスト
     PATTERNS.each do |data|
       expect(data[0]).to eq(oct_to_sym(data[1]))
     end
   end
 
   specify 'oct_to_int' do
+    # 全パターンのテスト
     PATTERNS.each do |data|
       expect(data[2]).to eq(oct_to_int(data[1]))
     end
   end
 
   specify 'int_to_oct' do
+    # 全パターンのテスト
     PATTERNS.each do |data|
       expect(data[1]).to eq(int_to_oct(data[2]))
+    end
+  end
+
+  specify 'getPropsFullPath' do
+    tf = Tempfile::new("zzz")
+    props = getPropsFullPath(tf.path)
+    process_uid = Etc.getpwuid(Process::Sys.getuid()).name
+    process_gid = Etc.getgrgid(Process::Sys.getgid()).name
+
+    expect(props[:user]).to eq(process_uid)
+    expect(props[:group]).to eq(process_gid)
+    expect(props[:mode]).to eq("rw-------")
+  end
+
+  specify 'setPropsFullPath and getPropsFullPath' do
+    tf = Tempfile::new("zzz")
+    path = tf.path
+    props = getPropsFullPath(path)
+
+    # 全パターンのテスト
+    PATTERNS.each do |data|
+      props[:mode] = data[0]
+      setPropsFullPath(path, props)
+      expect(getPropsFullPath(path)).to eq(props)
     end
   end
 

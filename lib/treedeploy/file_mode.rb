@@ -59,4 +59,31 @@ module FileMode
     ans += (v & ExecBit != 0) ?  'x' : '-'
   end
 
+
+  #
+  def getPropsFullPath(path)
+    props = {}
+    stat = File::stat(path)
+
+    props[:type] = "d" if stat.ftype == "directory"
+    props[:type] = "-" if stat.ftype == "file"
+
+    props[:mode] = oct_to_sym(int_to_oct(stat.mode & 00777))
+    props[:user] = Etc.getpwuid(stat.uid).name
+    props[:group] = Etc.getgrgid(stat.gid).name
+    props
+  end
+
+  #
+  def setPropsFullPath(path, props)
+    smode = sym_to_oct(props[:mode])
+    mode = oct_to_int(smode)
+    FileUtils.chmod(mode, path)
+    begin
+      FileUtils.chown(props[:user], props[:group], path)
+    rescue => e
+      p "Ignore: #{e}"
+    end
+  end
+
 end
