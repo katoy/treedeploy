@@ -13,7 +13,7 @@
    RubyOnRails のプロジェクトフィアル群のなかから、アプリケーションの動作に必要なものだけを取り出してサーバーに配置する
 といった事が考えられます。
 
-配布するファイルとその属性は、 gnu の tree コマンドの出力そのままを利用できます。
+配布するファイル一覧とファイル属性は、 gnu の tree コマンドの出力を そのままを利用できます。
 
 配置ファイルイメージを実際につくりあげてから、tree コマンドでファイル一覧をとれば、それをそのままファイル配置ツールに利用できます。
 したがって、ファイルの列挙 と その続映の一覧を作成を人手で行った場合に比べて、漏れ や ファイル属性の記載間違いが発生する可能性が少なくなります。
@@ -37,9 +37,17 @@
 使い方
 ======
 
+    $ treedeploy
+    Commands:
+      treedeploy check parent folder treelist     # parent/folder 以下が treelist の内容に沿っているかをチェックする
+      treedeploy deploy src dest folder treelist  # treelist の内容に従って、src/folder -> dest.folder に deploy する
+      treedeploy help [COMMAND]                   # Describe available commands or one specific command
+      treedeploy repaie parent folder treelist    # parent/folder 以下を treelist の設定に修繕する
+
+
     $ treedeploy deploy コピー元の親フォルダ名  抽出先の親フォルダ名  対象フォルダ名  吹き出すファイル一覧ファイル名
     
-    gem install しないで、実行する場合:
+    gem install せずに実行する場合:
     $ ruby lib/treedeploy/treedeploy.rb コピー元の親フォルダ名  抽出先の親フォルダ名  対象フォルダ名  吹き出すファイル一覧ファイル名
 
 
@@ -48,10 +56,11 @@
 src/cont 以下のファイル中から, tree.txt 中に列挙されたファイルだけが、tree.txt 中で指定された属性に変更されながらdestFolder/cont 以下に配置されます。
 (srcFilder/cont/* -> destFoldr/cont/* にファイルが配置されます)
 
-./work/run-sample.sh で、"ファイル一覧の作成処理、その結果を利用して別フォルダにファイルを配置する処理" の例を
+./work/run-sample.sh や ./work/ryn-my-samle.shで、"ファイル一覧の作成処理、その結果を利用して別フォルダにファイルを配置する処理" の例を
 試すことができます。
+./work/run-sample.sh は root 権限で実行しないと、正常に処理が進みません。chown, chgrp で root や postgres にファイル所有者変更をしている為です。
 
-この例では、次のようなファイル一覧ファイルが使われています。(tree -Qfaplug cont での出力結果をそのまま利用しています)
+./work/run-samoke.sh の例では、次のようなファイル一覧ファイルが使われています。(tree -Qfaplug cont での出力結果をそのまま利用しています)
 
     "cont"
     ├── [-r--r--r-- root     wheel   ]  "cont/444.txt"
@@ -66,7 +75,6 @@ src/cont 以下のファイル中から, tree.txt 中に列挙されたファイ
         └── [-rw-r--r-- postgres postgres]  "cont/sub-postgres/644.txt"
     
     4 directories, 6 files
-
 
 
 rake のタスク
@@ -85,5 +93,5 @@ doc/index.html  を open することでも閲覧できます。
 TODO
 =====
 
-* gem 化
-
+* テストカバレーッジをアップさせる事。
+* ユーザー名、グループ名が長い場合に、tree コマンドの出力は名前が短く省略されてしまい、ファイルの所有者/グループが正しく設定できない事に対処する事。

@@ -61,7 +61,7 @@ class Deploy
   #
   # checkFile
   # @return nil: 一致した,  != nil: 一致しない
-  def checkFile(srcRoot, props)
+  def checkFile(srcRoot, dummy, props)
     ans = nil
     begin
       src = File.join(srcRoot, props[:path])
@@ -78,8 +78,8 @@ class Deploy
   #
   # repairFile
   # @rerutn   nil: 修復不要 != nil: 修繕した
-  def repairFile(srcRoot, props)
-    ans = checkFile(srcRoot, props)
+  def repairFile(srcRoot, dummy, props)
+    ans = checkFile(srcRoot, dummy, props)
     begin
       if ans != nil
         path = File.join(srcRoot, props[:path])
@@ -94,11 +94,11 @@ class Deploy
   end
 
   #
-  # deploy
-  def deploy(srcRoot, destRoot, dir, treeDir)
+  # op = [deplpy, :check, :repair]
+  def visit_treedir(srcRoot, destRoot, dir, treeDir, op)
     ans = nil
 
-    FileUtils.mkdir_p(File.join(destRoot, dir))
+    FileUtils.mkdir_p(File.join(destRoot, dir)) if destRoot
     open(treeDir) { |f|
       line = ""
       while line = f.gets()
@@ -106,7 +106,17 @@ class Deploy
 
         props = parse(line)
         if props[:path]
-          ret = copyFile(srcRoot, destRoot, props)
+          ret = nil
+
+          # TODO: リファクタリング
+          if (op == :deploy)
+            ret = copyFile(srcRoot, destRoot, props)
+          elsif (op == :check)
+            ret = checkFile(srcRoot, nil, props)
+          elsif (op == :repair)
+            ret = repairFile(srcRoot, nil, props)
+          end
+
           return ret if ret
         end
       end
@@ -114,42 +124,16 @@ class Deploy
     nil
   end
 
-  #
-  # check
-  def check(parent, dir, treeDir)
-    ans = []
-    open(treeDir) { |f|
-      line = ""
-      while line = f.gets()
-        line.strip!
-
-        props = parse(line)
-        if props[:path]
-          ret = checkFile(parent, props)
-          ans.push(ret) if ret
-        end
-      end
-    }
-    ans
+  def deploy(srcRoot, destRoot, dir, treeDir)
+    visit_treedir(srcRoot, destRoot, dir, treeDir, :deploy)
   end
 
-  #
-  # repair
-  def repair(parent, dir, treeDir)
-    ans = []
-    open(treeDir) { |f|
-      line = ""
-      while line = f.gets()
-        line.strip!
+  def check(parent, dir, treeDir)
+    visit_treedir(parent, nil, dir, treeDir, :check)
+  end
 
-        props = parse(line)
-        if props[:path]
-          ret = repairFile(parent, props)
-          ans.push(ret) if ret
-        end
-      end
-    }
-    ans
+  def repair(parent, dir, treeDir)
+    visit_treedir(parent, nil, dir, treeDir, :repair)
   end
 
 end

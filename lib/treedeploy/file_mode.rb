@@ -10,12 +10,12 @@ module FileMode
   WriteBit = 2
   ExecBit  = 1
   NoBit    = 0
-  SymbolicMode = { 'r' => ReadBit, 'w' => WriteBit, 'x' => ExecBit, '-' => 0 }
+  SymbolicMode = { 'r' => ReadBit, 'w' => WriteBit, 'x' => ExecBit, '-' => NoBit }
 
   # シンボル表記を8進表記に変換する。
   # "rwxr-xr-x" -> "755" ( = 493)
   def sym_to_oct(sym)
-    raise "invalid #{sym}" unless /^[rwx\-]{9}$/.match(sym)
+    raise "invalid #{sym}" unless /^([r|\-][w|\-][x\-]){3}$/.match(sym)
     sym3_to_oct(sym[0..2]) + sym3_to_oct(sym[3..5]) + sym3_to_oct(sym[6..8])
   end
 
@@ -43,7 +43,7 @@ module FileMode
   # シンボル表記を 8 進表記に変換する。
   # "rwx" -> 7
   def sym3_to_oct(sym)
-    raise "invalid #{sym}" unless /^[rwx\-]{3}$/.match(sym)
+    raise "invalid #{sym}" unless /^[r|\-][w|\-][x|\-]$/.match(sym)
     v = SymbolicMode[sym[0]] + SymbolicMode[sym[1]] + SymbolicMode[sym[2]]
     v.to_s(8)
   end
