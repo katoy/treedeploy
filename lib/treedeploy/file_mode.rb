@@ -59,18 +59,38 @@ module FileMode
     ans += (v & ExecBit != 0) ?  'x' : '-'
   end
 
+  FILE_TYPE = {
+    "blockSpecial"     => "b", # Block special file.
+    "characterSpecial" => "c", # Character special file.
+    "directory"        => "d", # Directory.
+    "link"             => "l", # Symbolic link.
+    "socket"           => "s", # Socket link.
+    "fifo"             => "p", # FIFO.
+    "file"             => "-", # Regular file.
+    "unknown"          => "?"  # unknown
+  }
 
   #
   def getPropsFullPath(path)
     props = {}
-    stat = File::stat(path)
+    stat = File::lstat(path)
 
-    props[:type] = "d" if stat.ftype == "directory"
-    props[:type] = "-" if stat.ftype == "file"
+    props[:type] = FILE_TYPE[stat.ftype]
+    props[:type] = "?" if props[:type] == nil
+
+    props[:size] = stat.size
 
     props[:mode] = oct_to_sym(int_to_oct(stat.mode & 00777))
-    props[:user] = Etc.getpwuid(stat.uid).name
-    props[:group] = Etc.getgrgid(stat.gid).name
+    begin
+      props[:user] = Etc.getpwuid(stat.uid).name
+    rescue => e
+      props[:user] = "#{stat.uid}"
+    end
+    begin
+      props[:group] = Etc.getgrgid(stat.gid).name
+    rescue => e
+      props[:group] = "#{stat.gid}"
+    end
     props
   end
 

@@ -66,26 +66,35 @@ describe FileMode do
   end
 
   specify 'getPropsFullPath' do
-    tf = Tempfile::new("zzz")
-    props = getPropsFullPath(tf.path)
-    process_uid = Etc.getpwuid(Process::Sys.getuid()).name
-    process_gid = Etc.getgrgid(Process::Sys.getgid()).name
+    if RUBY_PLATFORM.downcase =~ /win32/
+      expect(true).to eq(true)
+    else
+      tf = Tempfile::new("zzz")
+      props = getPropsFullPath(tf.path)
+      process_uid = Etc.getpwuid(Process::Sys.getuid()).name
+      process_gid = Etc.getgrgid(Process::Sys.getgid()).name
 
-    expect(props[:user]).to eq(process_uid)
-    expect(props[:group]).to eq(process_gid)
-    expect(props[:mode]).to eq("rw-------")
+      expect(props[:user]).to eq(process_uid)
+      expect(props[:group]).to eq(process_gid)
+      expect(props[:mode]).to eq("rw-------")
+      expect(props[:size]).to eq(0)
+    end
   end
 
   specify 'setPropsFullPath and getPropsFullPath' do
-    tf = Tempfile::new("zzz")
-    path = tf.path
-    props = getPropsFullPath(path)
+    if RUBY_PLATFORM.downcase =~ /win32/
+      expect(true).to eq(true)
+    else
+      tf = Tempfile::new("zzz")
+      path = tf.path
+      props = getPropsFullPath(path)
 
-    # 全パターンのテスト
-    PATTERNS.each do |data|
-      props[:mode] = data[0]
-      setPropsFullPath(path, props)
-      expect(getPropsFullPath(path)).to eq(props)
+      # 全パターンのテスト
+      PATTERNS.each do |data|
+        props[:mode] = data[0]
+        setPropsFullPath(path, props)
+        expect(getPropsFullPath(path)).to eq(props)
+      end
     end
   end
 

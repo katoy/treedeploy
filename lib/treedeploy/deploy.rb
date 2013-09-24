@@ -3,6 +3,7 @@
 
 require 'rubygems'
 require 'etc'
+require 'find'
 require 'pp'
 
 require File.join(File.expand_path(File.dirname(__FILE__)), 'file_mode')
@@ -13,9 +14,7 @@ class Deploy
 
   def report_err(ret)
     if ret != nil and ret.size > 0
-      ret.each do |a|
-        puts a
-      end
+      ret.each { |a| puts a }
     end
   end
 
@@ -23,6 +22,7 @@ class Deploy
   # parse
   def parse(line)
     ans = {}
+
     # line の例  "|-- [drwxr-xr-x katoy    dev     ]  cont/sub"
     m = /^.*\[(.*)\] *\"(.*)"$/.match(line)
     if m
@@ -39,9 +39,9 @@ class Deploy
   #
   # copyFile
   def copyFile(srcRoot, destRoot, props)
-    path = props[:path]
-    src = File.join(srcRoot, path)
-    dest = File.join(destRoot, path)
+
+    src = File.join(srcRoot, props[:path])
+    dest = File.join(destRoot, props[:path])
 
     begin
       if props[:type] == 'd'       # directory
@@ -53,7 +53,7 @@ class Deploy
       end
       setPropsFullPath(dest, props)
     rescue => e
-      e
+      return e
     end
     nil
   end
@@ -70,7 +70,7 @@ class Deploy
       current_props = getPropsFullPath(src)
       ans = [current_props, props] unless ((props[:user] == current_props[:user]) and (props[:group] == current_props[:group]) and (props[:mode] == current_props[:mode]))
     rescue => e
-      ans = e
+      return e
     end
     ans
   end
@@ -79,8 +79,9 @@ class Deploy
   # repairFile
   # @rerutn   nil: 修復不要 != nil: 修繕した
   def repairFile(srcRoot, dummy, props)
-    ans = checkFile(srcRoot, dummy, props)
+    ans = nil
     begin
+      ans = checkFile(srcRoot, dummy, props)
       if ans != nil
         path = File.join(srcRoot, props[:path])
         oldProps = getPropsFullPath(path)
@@ -88,35 +89,23 @@ class Deploy
         ans = [oldProps, props]
       end
     rescue => e
-      ans = e
+      return e
     end
     ans
   end
 
   #
-  # op = [deplpy, :check, :repair]
-  def visit_treedir(srcRoot, destRoot, dir, treeDir, op)
+  # fn = { method(:copyFile), methdd(:checkFile), method(:repairFile) }
+  def visit_treedir(srcRoot, destRoot, dir, treeDir, fn)
     ans = nil
 
     FileUtils.mkdir_p(File.join(destRoot, dir)) if destRoot
     open(treeDir) { |f|
       line = ""
       while line = f.gets()
-        line.strip!
-
-        props = parse(line)
+        props = parse(line.strip!)
         if props[:path]
-          ret = nil
-
-          # TODO: リファクタリング
-          if (op == :deploy)
-            ret = copyFile(srcRoot, destRoot, props)
-          elsif (op == :check)
-            ret = checkFile(srcRoot, nil, props)
-          elsif (op == :repair)
-            ret = repairFile(srcRoot, nil, props)
-          end
-
+          ret = fn.call(srcRoot, destRoot, props)
           return ret if ret
         end
       end
@@ -124,16 +113,64 @@ class Deploy
     nil
   end
 
-  def deploy(srcRoot, destRoot, dir, treeDir)
-    visit_treedir(srcRoot, destRoot, dir, treeDir, :deploy)
+  #
+  def deploy(srcRoot, destRoot, dir, treeDir, options = {})
+    visit_treedir(srcRoot, destRoot, dir, treeDir, method(:copyFile))
   end
 
-  def check(parent, dir, treeDir)
-    visit_treedir(parent, nil, dir, treeDir, :check)
+  #
+  def check(parent, dir, treeDir, options = {})
+    visit_treedir(parent, nil, dir, treeDir, method(:checkFile))
   end
 
-  def repair(parent, dir, treeDir)
-    visit_treedir(parent, nil, dir, treeDir, :repair)
+  #
+  def repair(parent, dir, treeDir, options = {})
+    visit_treedir(parent, nil, dir, treeDir, method(:repairFile))
+  end
+
+  def list(parent, dir, options = {})
+
+    def make_line(f, props, options)
+      # p props
+
+      # "#{prefix} [#{props[:mode]} #{props[:user]}   #{props[:group]} ]  \"#{f}\""
+      ans = ""
+      attr = ""
+
+      if options[:protections]
+        attr += "#{props[:type]}#{props[:mode]}"
+      end
+
+      if options[:owner]
+        attr += " " if attr != ""
+        attr += sprintf("%-8s", props[:user])
+      end
+      if options[:group]
+        attr += " " if attr != ""
+        attr += sprintf("%-8s", props[:group])
+      end
+      if options[:size]
+        attr += " " if attr != ""
+        attr += sprintf("%12d", props[:size])
+      end
+
+      if attr != ""
+        ams += " " if ans != ""
+        ans += "[#{attr}]"
+      end
+
+      if options[:quot]
+        f = "\"#{f}\""
+      end
+
+      ans += " "if ans != ""
+      ans += "#{f}"
+    end
+
+    Find.find(File.join(parent, dir)) {|f|
+      props = getPropsFullPath(f)
+      puts make_line(f, props, options)
+    }
   end
 
 end
