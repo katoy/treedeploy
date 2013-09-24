@@ -42,9 +42,10 @@
       treedeploy check parent folder treelist     # parent/folder 以下が treelist の内容に沿っているかをチェックする
       treedeploy deploy src dest folder treelist  # treelist の内容に従って、src/folder -> dest.folder に deploy する
       treedeploy help [COMMAND]                   # Describe available commands or one specific command
-      treedeploy repaie parent folder treelist    # parent/folder 以下を treelist の設定に修繕する
-
-
+      treedeploy list parent folder               # parent/folder 以下のファイル一覧を出力する
+      treedeploy repair parent folder treelist    # parent/folder 以下を treelist の設定に修繕する
+    
+    
     $ treedeploy deploy コピー元の親フォルダ名  抽出先の親フォルダ名  対象フォルダ名  吹き出すファイル一覧ファイル名
     
     gem install せずに実行する場合:
