@@ -21,7 +21,11 @@ Commands:
   rspec repair parent folder treelist    # parent/folder 以下を treelist の設定に修繕する
 
 EOS
-    expect(output).to eq(CLI_OUT)
+    expect(output).to match(/check parent folder treelist/)
+    expect(output).to match(/deploy src dest folder treelist/)
+    expect(output).to match(/help \[COMMAND\]/)
+    expect(output).to match(/list parent folder/)
+    expect(output).to match(/repair parent folder treelist/)
   end
 
   specify 'Shows information for deploy, check, repair, list' do

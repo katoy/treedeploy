@@ -42,7 +42,8 @@ describe Deploy do
     ret = d.copyFile('.', './tmp', props)
     expect(ret).to eq(nil)
     ret = d.getPropsFullPath("tmp/bin")
-    expect(ret).to eq({:type=>"d", :size=>68, :mode=>"rwxr-xr-x", :user=> user, :group=> group})
+    ret[:size] = 0  # directory のサイズは環境に依存するので ...
+    expect(ret).to eq({:type=>"d", :size=>0, :mode=>"rwxr-xr-x", :user=> user, :group=> group})
 
     ret = d.checkFile('.', nil, props)
     expect(ret).to eq(nil)
@@ -141,12 +142,12 @@ describe Deploy do
     }
     expect(ret).to eq(nil)
 
-    props = d.getPropsFullPath('.')
+    props = d.getPropsFullPath('tmp/bin')
     user = props[:user]
     group = props[:group]
-
+    size = props[:size]
 LIST_OUT = <<"EOS"
-[drwxr-xr-x #{sprintf('%-8s', user)} #{sprintf('%-8s', group)}          102] "./bin"
+[drwxr-xr-x #{sprintf('%-8s', user)} #{sprintf('%-8s', group)} #{sprintf('%12d', size)}] "./bin"
 [-rwxr-xr-x #{sprintf('%-8s', user)} #{sprintf('%-8s', group)}           65] "./bin/treedeploy"
 EOS
     expect(output).to eq(LIST_OUT)
