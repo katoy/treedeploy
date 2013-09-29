@@ -43,6 +43,9 @@ class Deploy
     src = File.join(srcRoot, props[:path])
     dest = File.join(destRoot, props[:path])
 
+    # ファイルの存在をチェックする
+    stat = File::lstat(src)
+
     begin
       if props[:type] == 'd'       # directory
         FileUtils.mkdir_p dest
@@ -63,8 +66,12 @@ class Deploy
   # @return nil: 一致した,  != nil: 一致しない
   def checkFile(srcRoot, dummy, props)
     ans = nil
+
     begin
       src = File.join(srcRoot, props[:path])
+      # ファイルの存在をチェックする
+      stat = File::lstat(src)
+
       # props[:user], props[:group], props[:mode])
       # File::stat(src),   s.mode
       current_props = getPropsFullPath(src)

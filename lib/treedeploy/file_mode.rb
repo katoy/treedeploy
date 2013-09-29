@@ -96,13 +96,18 @@ module FileMode
 
   #
   def setPropsFullPath(path, props)
+
+    # ファイルの存在をチェックする
+    stat = File::lstat(path)
+
     smode = sym_to_oct(props[:mode])
     mode = oct_to_int(smode)
-    FileUtils.chmod(mode, path)
     begin
+      FileUtils.chmod(mode, path)
       FileUtils.chown(props[:user], props[:group], path)
+      nil
     rescue => e
-      p "Ignore: #{e}"
+      "Ignore: #{e}"
     end
   end
 
