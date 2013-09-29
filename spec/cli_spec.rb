@@ -36,6 +36,8 @@ EOS
     user = props[:user]
     group = props[:group]
 
+    FileUtils.chmod(0755, "./bin/treedeploy")
+    FileUtils.chmod(0755, "./bin")
     system("bundle exec ruby bin/treedeploy list -Qpug . bin > spec/tree.txt")
 
     output = capture(:stdout) {
