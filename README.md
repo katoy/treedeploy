@@ -98,6 +98,16 @@ doc/index.html  を open することでも閲覧できます。
     $ dot -Tpng tapp.dot  -o tapp.png
 
 
+debug
+======
+
+break したい箇所に
+
+    binding.pry
+
+と書いて、rake sepc を実行してください
+
+
 TODO
 =====
 
