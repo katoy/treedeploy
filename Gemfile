@@ -10,4 +10,8 @@ group :test do
   gem 'yard', require: false
   gem 'redcarpet', require: false
   gem 'pry-debugger', require: false
+  gem "metric_fu"
 end
+
+gem 'pry-debugger', require: false
+gem 'hirb-unicode', require: false

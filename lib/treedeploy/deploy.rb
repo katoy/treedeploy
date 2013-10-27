@@ -46,17 +46,17 @@ class Deploy
     # ファイルの存在をチェックする
     stat = File::lstat(src)
 
+    if props[:type] == 'd'       # directory
+      FileUtils.mkdir_p dest
+    elsif props[:type] == '-'    # file
+      FileUtils.copy src, dest
+    else
+      # TODO: sym-link ...
+    end
     begin
-      if props[:type] == 'd'       # directory
-        FileUtils.mkdir_p dest
-      elsif props[:type] == '-'    # file
-        FileUtils.copy src, dest
-      else
-                                   # TODO: sym-link ...
-      end
-      setPropsFullPath(dest, props)
+     setPropsFullPath(dest, props)
     rescue => e
-      return e
+      puts "# ignore #{dest}: #{e.message}"
     end
     nil
   end
@@ -92,7 +92,11 @@ class Deploy
       if ans != nil
         path = File.join(srcRoot, props[:path])
         oldProps = getPropsFullPath(path)
-        setPropsFullPath(path, props)
+        begin
+          setPropsFullPath(path, props)
+        rescue => e
+          puts "# ignore #{path}: #{e.message}"
+        end
         ans = [oldProps, props]
       end
     rescue => e

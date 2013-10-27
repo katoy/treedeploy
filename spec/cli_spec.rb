@@ -1,26 +1,38 @@
 # -*- coding: utf-8 -*-
 
 require 'spec_helper'
-
+require 'thor/runner'
 
 describe Deploy do
 
   include FileUtils
+  include Treedeploy
+
+  specify 'Shows information for unkown command' do
+
+    expect(Treedeploy::CLI::Runner).to receive :exit
+    output = capture(:stderr) {
+      Treedeploy::CLI::Runner.start ['xxx']
+    }
+    expect(output).to eq("Could not find command \"xxx\".\n")
+
+  end
+
+#  specify 'Shows help' do
+#
+#    output = capture(:stdout) {
+#      Treedeploy::Command.new.main([])
+#    }
+#    expect(output).to match(/usage\:/)
+#
+#  end
 
   specify 'Shows information for no argument' do
 
     output = capture(:stdout) {
-      Treedeploy::CLI.start([])
+      Treedeploy::CLI.start []
+      # Treedeploy::CLI::Runner.start []
     }
-    CLI_OUT = <<EOS
-Commands:
-  rspec check parent folder treelist     # parent/folder 以下が treelist の内容に沿っているかをチェックする
-  rspec deploy src dest folder treelist  # treelist の内容に従って、src/folder -> dest.folder に deploy する
-  rspec help [COMMAND]                   # Describe available commands or one specific command
-  rspec list parent folder               # parent/folder 以下のファイル一覧を出力する
-  rspec repair parent folder treelist    # parent/folder 以下を treelist の設定に修繕する
-
-EOS
     expect(output).to match(/check parent folder treelist/)
     expect(output).to match(/deploy src dest folder treelist/)
     expect(output).to match(/help \[COMMAND\]/)
@@ -41,23 +53,23 @@ EOS
     system("bundle exec ruby bin/treedeploy list -Qpug . bin > spec/tree.txt")
 
     output = capture(:stdout) {
-      Treedeploy::CLI.start(["deploy", ".", "tmp", "bin", "spec/tree.txt"])
+      Treedeploy::CLI.start ["deploy", ".", "tmp", "bin", "spec/tree.txt"]
     }
     expect(output).to eq("")
 
     output = capture(:stdout) {
-      Treedeploy::CLI.start(["check", "tmp", "bin", "spec/tree.txt"])
+      Treedeploy::CLI.start ["check", "tmp", "bin", "spec/tree.txt"]
     }
     expect(output).to eq("")
 
     output = capture(:stdout) {
-      Treedeploy::CLI.start(["repair", "tmp", "bin", "spec/tree.txt"])
+      Treedeploy::CLI.start ["repair", "tmp", "bin", "spec/tree.txt"]
     }
     expect(output).to eq("")
 
     FileUtils.chmod(0777, "tmp/bin/treedeploy")
     output = capture(:stdout) {
-      Treedeploy::CLI.start(["check", "tmp", "bin", "spec/tree.txt"])
+      Treedeploy::CLI.start ["check", "tmp", "bin", "spec/tree.txt"]
     }
 
     CLI_CHECK_OUT= <<"EOS"
@@ -67,7 +79,7 @@ EOS
     expect(output).to eq(CLI_CHECK_OUT)
 
     output = capture(:stdout) {
-      Treedeploy::CLI.start(["repair", "tmp", "bin", "spec/tree.txt"])
+      Treedeploy::CLI.start ["repair", "tmp", "bin", "spec/tree.txt"]
     }
     CLI_REPAIR_OUT = <<"EOS"
 {:type=>"-", :size=>65, :mode=>"rwxrwxrwx", :user=>\"#{user}\", :group=>\"#{group}\"}
@@ -76,7 +88,7 @@ EOS
     expect(output).to eq(CLI_REPAIR_OUT)
 
     output = capture(:stdout) {
-      Treedeploy::CLI.start(["list", "./", "bin", "-Qpug"])
+      Treedeploy::CLI.start ["list", "./", "bin", "-Qpug"]
     }
     CLI_LIST_OUT = <<"EOS"
 [drwxr-xr-x #{sprintf('%-8s', user)} #{sprintf('%-8s', group)}] "./bin"

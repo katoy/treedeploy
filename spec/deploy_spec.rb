@@ -64,13 +64,15 @@ describe Deploy do
     expect(props).to eq({:type=>"-", :size=>65, :mode=>"rwxrw-r--", :user=> user, :group=> group})
 
     props[:user] = 'uuu'
-    ret = d.setPropsFullPath("tmp/bin/treedeploy", props)
-    expect("#{ret}").to eq("Ignore: can't find user for uuu")
+    expect {
+      d.setPropsFullPath("tmp/bin/treedeploy", props)
+    }.to raise_error(ArgumentError, "can't find user for uuu")
 
     props[:user] = user
     props[:group] = 'ggg'
-    ret = d.setPropsFullPath("tmp/bin/treedeploy", props)
-    expect("#{ret}").to eq("Ignore: can't find group for ggg")
+    expect {
+      d.setPropsFullPath("tmp/bin/treedeploy", props)
+    }.to raise_error(ArgumentError, "can't find group for ggg")
 
   end
 
@@ -83,9 +85,15 @@ describe Deploy do
     group = props[:group]
 
     props = d.parse("  ─ [drwxr-xr-x #{user}  #{group}  ] \"no-exist\"")
-    expect {d.copyFile('.', './tmp', props)} .to raise_error(Errno::ENOENT, "No such file or directory - ./no-exist")
-    expect {d.getPropsFullPath("tmp/no-exist")} .to raise_error(Errno::ENOENT, "No such file or directory - tmp/no-exist")
-    expect {d.setPropsFullPath("tmp/no-exist", props)} .to raise_error(Errno::ENOENT, "No such file or directory - tmp/no-exist")
+    expect {
+      d.copyFile('.', './tmp', props)
+    }.to raise_error(Errno::ENOENT, "No such file or directory - ./no-exist")
+    expect {
+      d.getPropsFullPath("tmp/no-exist")
+    }.to raise_error(Errno::ENOENT, "No such file or directory - tmp/no-exist")
+    expect {
+      d.setPropsFullPath("tmp/no-exist", props)
+    }.to raise_error(Errno::ENOENT, "No such file or directory - tmp/no-exist")
 
     ret = d.checkFile('.', nil, props)
     expect("#{ret}").to eq("No such file or directory - ./no-exist")
@@ -152,6 +160,26 @@ LIST_OUT = <<"EOS"
 EOS
     expect(output).to eq(LIST_OUT)
 
+  end
+
+  specify 'err in copyFile' do
+    user = "xxxx"
+    group = "xxxx"
+    props = d.parse("  ─ [drwxr-xr-x #{user}  #{group}  ] \"bin\"")
+    out = capture(:stdout) {
+      out = d.copyFile('.', './tmp', props)
+    }
+    expect(out).to eq("# ignore ./tmp/bin: can't find user for xxxx\n")
+  end
+
+  specify 'err in repair' do
+    user = "xxxx"
+    group = "xxxx"
+    props = d.parse("  ─ [drwxr-xr-x #{user}  #{group}  ] \"bin\"")
+    out = capture(:stdout) {
+      out = d.repairFile('.', './tmp', props)
+    }
+    expect(out).to eq("# ignore ./bin: can't find user for xxxx\n")
   end
 
 end

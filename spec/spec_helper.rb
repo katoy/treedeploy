@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 
+require 'pry'
+
 require 'simplecov'
 require 'coveralls'
 require 'simplecov-rcov'
