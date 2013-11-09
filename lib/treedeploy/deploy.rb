@@ -84,7 +84,10 @@ class Deploy
 
   #
   # repairFile
-  # @rerutn   nil: 修復不要 != nil: 修繕した
+  # @param [String] srcRoot
+  # @param [String] dummy
+  # @param [Hash] props
+  # @return   nil: 修復不要 != nil: 修繕した
   def repairFile(srcRoot, dummy, props)
     ans = nil
     begin

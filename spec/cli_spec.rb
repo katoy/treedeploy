@@ -18,15 +18,6 @@ describe Deploy do
 
   end
 
-#  specify 'Shows help' do
-#
-#    output = capture(:stdout) {
-#      Treedeploy::Command.new.main([])
-#    }
-#    expect(output).to match(/usage\:/)
-#
-#  end
-
   specify 'Shows information for no argument' do
 
     output = capture(:stdout) {

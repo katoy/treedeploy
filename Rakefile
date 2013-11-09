@@ -14,7 +14,7 @@ YARD::Rake::YardocTask.new do |t|
   t.options << '--debug' << '--verbose' if $trace
 end
 
-desc "Delete doc/*, coverage/*, log/*, pkg/*. **/*~, **/#*"
+desc 'Delete doc/*, coverage/*, log/*, pkg/*. **/*~, **/#*'
 task :clean do
   system("rm -fr doc/*")
   system("rm -fr coverage/*")
@@ -24,3 +24,9 @@ task :clean do
   Dir.glob("**/#*").each { |f| FileUtils.rm f }
 end
 
+require 'metric_fu'
+
+desc 'checkstyle using rubocop.'
+task :checkstyle do
+  system "rubocop -r rubocop/formatter/checkstyle_formatter -R --format Rubocop:heckstyleFormatter --out tmp/checkstyle.xml"
+end

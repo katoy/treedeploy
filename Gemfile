@@ -15,3 +15,6 @@ end
 
 gem 'pry-debugger', require: false
 gem 'hirb-unicode', require: false
+
+gem 'rubocop', require: false
+gem 'rubocop-checkstyle_formatter', require: false
