@@ -13,9 +13,7 @@ class Deploy
   include FileMode
 
   def report_err(ret)
-    if ret != nil and ret.size > 0
-      ret.each { |a| puts a }
-    end
+    ret.each { |a| puts a } if ret && ret.size > 0
   end
 
   #
@@ -23,7 +21,7 @@ class Deploy
   def parse(line)
     ans = {}
 
-    # line の例  "|-- [drwxr-xr-x katoy    dev     ]  cont/sub"
+    # line の例  '|-- [drwxr-xr-x katoy    dev     ]  cont/sub'
     m = /^.*\[(.*)\] *\"(.*)"$/.match(line)
     if m
       s = m[1].split
@@ -37,14 +35,14 @@ class Deploy
   end
 
   #
-  # copyFile
-  def copyFile(srcRoot, destRoot, props)
+  # copy_file
+  def copy_file(srcRoot, destRoot, props)
 
     src = File.join(srcRoot, props[:path])
     dest = File.join(destRoot, props[:path])
 
     # ファイルの存在をチェックする
-    stat = File::lstat(src)
+    File::lstat(src)
 
     if props[:type] == 'd'       # directory
       FileUtils.mkdir_p dest
@@ -54,7 +52,7 @@ class Deploy
       # TODO: sym-link ...
     end
     begin
-     setPropsFullPath(dest, props)
+      set_props_fullpath(dest, props)
     rescue => e
       puts "# ignore #{dest}: #{e.message}"
     end
@@ -64,18 +62,18 @@ class Deploy
   #
   # checkFile
   # @return nil: 一致した,  != nil: 一致しない
-  def checkFile(srcRoot, dummy, props)
+  def check_file(srcRoot, dummy, props)
     ans = nil
 
     begin
       src = File.join(srcRoot, props[:path])
       # ファイルの存在をチェックする
-      stat = File::lstat(src)
+      File::lstat(src)
 
       # props[:user], props[:group], props[:mode])
       # File::stat(src),   s.mode
-      current_props = getPropsFullPath(src)
-      ans = [current_props, props] unless ((props[:user] == current_props[:user]) and (props[:group] == current_props[:group]) and (props[:mode] == current_props[:mode]))
+      current_props = get_props_fullpath(src)
+      ans = [current_props, props] unless (props[:user] == current_props[:user]) && (props[:group] == current_props[:group]) && (props[:mode] == current_props[:mode])
     rescue => e
       return e
     end
@@ -88,19 +86,19 @@ class Deploy
   # @param [String] dummy
   # @param [Hash] props
   # @return   nil: 修復不要 != nil: 修繕した
-  def repairFile(srcRoot, dummy, props)
+  def repair_file(srcRoot, dummy, props)
     ans = nil
     begin
-      ans = checkFile(srcRoot, dummy, props)
-      if ans != nil
+      ans = check_file(srcRoot, dummy, props)
+      if ans
         path = File.join(srcRoot, props[:path])
-        oldProps = getPropsFullPath(path)
+        old_props = get_props_fullpath(path)
         begin
-          setPropsFullPath(path, props)
+          set_props_fullpath(path, props)
         rescue => e
           puts "# ignore #{path}: #{e.message}"
         end
-        ans = [oldProps, props]
+        ans = [old_props, props]
       end
     rescue => e
       return e
@@ -111,35 +109,32 @@ class Deploy
   #
   # fn = { method(:copyFile), methdd(:checkFile), method(:repairFile) }
   def visit_treedir(srcRoot, destRoot, dir, treeDir, fn)
-    ans = nil
-
     FileUtils.mkdir_p(File.join(destRoot, dir)) if destRoot
-    open(treeDir) { |f|
-      line = ""
-      while line = f.gets()
+    open(treeDir) do |f|
+      while line = f.gets
         props = parse(line.strip!)
         if props[:path]
           ret = fn.call(srcRoot, destRoot, props)
           return ret if ret
         end
       end
-    }
+    end
     nil
   end
 
   #
   def deploy(srcRoot, destRoot, dir, treeDir, options = {})
-    visit_treedir(srcRoot, destRoot, dir, treeDir, method(:copyFile))
+    visit_treedir(srcRoot, destRoot, dir, treeDir, method(:copy_file))
   end
 
   #
   def check(parent, dir, treeDir, options = {})
-    visit_treedir(parent, nil, dir, treeDir, method(:checkFile))
+    visit_treedir(parent, nil, dir, treeDir, method(:check_file))
   end
 
   #
   def repair(parent, dir, treeDir, options = {})
-    visit_treedir(parent, nil, dir, treeDir, method(:repairFile))
+    visit_treedir(parent, nil, dir, treeDir, method(:repair_file))
   end
 
   def list(parent, dir, options = {})
@@ -148,28 +143,28 @@ class Deploy
       # p props
 
       # "#{prefix} [#{props[:mode]} #{props[:user]}   #{props[:group]} ]  \"#{f}\""
-      ans = ""
-      attr = ""
+      ans = ''
+      attr = ''
 
       if options[:protections]
         attr += "#{props[:type]}#{props[:mode]}"
       end
 
       if options[:owner]
-        attr += " " if attr != ""
-        attr += sprintf("%-8s", props[:user])
+        attr += ' ' if attr != ''
+        attr += sprintf('%-8s', props[:user])
       end
       if options[:group]
-        attr += " " if attr != ""
-        attr += sprintf("%-8s", props[:group])
+        attr += ' ' if attr != ''
+        attr += sprintf('%-8s', props[:group])
       end
       if options[:size]
-        attr += " " if attr != ""
-        attr += sprintf("%12d", props[:size])
+        attr += ' ' if attr != ''
+        attr += sprintf('%12d', props[:size])
       end
 
-      if attr != ""
-        ams += " " if ans != ""
+      if attr != ''
+        ans += ' ' if ans != ''
         ans += "[#{attr}]"
       end
 
@@ -177,14 +172,15 @@ class Deploy
         f = "\"#{f}\""
       end
 
-      ans += " "if ans != ""
+      ans += ' ' if ans != ''
       ans += "#{f}"
+      ans
     end
 
-    Find.find(File.join(parent, dir)) {|f|
-      props = getPropsFullPath(f)
+    Find.find(File.join(parent, dir)) do |f|
+      props = get_props_fullpath(f)
       puts make_line(f, props, options)
-    }
+    end
   end
 
 end

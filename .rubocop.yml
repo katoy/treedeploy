@@ -1,0 +1,7 @@
+inherit_from: rubocop-todo.yml
+
+# Avoid methods longer than 30 lines of code
+MethodLength:
+  Max: 30
+  CountComments: false
+  Enabled: true

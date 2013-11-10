@@ -1,6 +1,8 @@
-require "treedeploy/version"
-require "treedeploy/cli"
-require "treedeploy/deploy"
+# -*- coding: utf-8 -*-
+
+require 'treedeploy/version'
+require 'treedeploy/cli'
+require 'treedeploy/deploy'
 
 module Treedeploy
   # Your code goes here...

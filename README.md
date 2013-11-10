@@ -91,6 +91,11 @@ coverage/index.html, coverage/rdoc/index.html でカバレッジ結果を閲覧�
 $ yard server で生成されたドキュメトを http://localhost:8808 で閲覧できます。  
 doc/index.html  を open することでも閲覧できます。  
 
+* rake checkstyle
+
+rubocop で lib/*, spec/* をチェックします。
+
+
 * クラス図の作成
 
     $ yard doc
@@ -105,7 +110,8 @@ break したい箇所に
 
     binding.pry
 
-と書いて、rake sepc を実行してください
+と書いて、rake sepc を実行してください 。
+(rspec -r pry ...や ruby -r pry ...  としても break します。)
 
 
 TODO

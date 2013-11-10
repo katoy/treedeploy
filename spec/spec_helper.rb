@@ -16,13 +16,11 @@ SimpleCov.formatter = SimpleCov::Formatter::MultiFormatter[
 ]
 SimpleCov.start
 
-
 SimpleCov.start do
   add_filter 'spec'
 end
 
-
-Dir[File.join(File.dirname(__FILE__), "..",  "lib", "treedeploy", "*.rb")].each do |f|
+Dir[File.join(File.dirname(__FILE__), '..',  'lib', 'treedeploy', '*.rb')].each do |f|
   require f
 end
 
