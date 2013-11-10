@@ -138,49 +138,36 @@ class Deploy
   end
 
   def list(parent, dir, options = {})
-
-    def make_line(f, props, options)
-      # p props
-
-      # "#{prefix} [#{props[:mode]} #{props[:user]}   #{props[:group]} ]  \"#{f}\""
-      ans = ''
-      attr = ''
-
-      if options[:protections]
-        attr += "#{props[:type]}#{props[:mode]}"
-      end
-
-      if options[:owner]
-        attr += ' ' if attr != ''
-        attr += sprintf('%-8s', props[:user])
-      end
-      if options[:group]
-        attr += ' ' if attr != ''
-        attr += sprintf('%-8s', props[:group])
-      end
-      if options[:size]
-        attr += ' ' if attr != ''
-        attr += sprintf('%12d', props[:size])
-      end
-
-      if attr != ''
-        ans += ' ' if ans != ''
-        ans += "[#{attr}]"
-      end
-
-      if options[:quot]
-        f = "\"#{f}\""
-      end
-
-      ans += ' ' if ans != ''
-      ans += "#{f}"
-      ans
-    end
-
     Find.find(File.join(parent, dir)) do |f|
       props = get_props_fullpath(f)
       puts make_line(f, props, options)
     end
+  end
+
+  private
+
+  def append_str(head, tail)
+    ans = head
+    ans += ' ' if ans != ''
+    ans += tail
+    ans
+  end
+
+  def make_line(f, props, options)
+    # p props
+    # "#{prefix} [#{props[:mode]} #{props[:user]}   #{props[:group]} ]  \"#{f}\""
+    ans = ''
+    attr = ''
+
+    attr = append_str(attr, "#{props[:type]}#{props[:mode]}")  if options[:protections]
+    attr = append_str(attr, sprintf('%-8s', props[:user]))     if options[:owner]
+    attr = append_str(attr, sprintf('%-8s', props[:group]))    if options[:group]
+    attr = append_str(attr, sprintf('%12d', props[:size]))     if options[:size]
+
+    ans = append_str(ans, "[#{attr}]")  if attr != ''
+
+    f = "\"#{f}\""  if options[:quot]
+    append_str(ans, "#{f}")
   end
 
 end

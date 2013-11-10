@@ -10,7 +10,7 @@ group :test do
   gem 'yard', require: false
   gem 'redcarpet', require: false
   gem 'pry-debugger', require: false
-  gem "metric_fu"
+  gem "metric_fu", require: false
 end
 
 gem 'pry-debugger', require: false
