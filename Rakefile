@@ -31,5 +31,5 @@ require 'metric_fu'
 
 desc 'checkstyle using rubocop.'
 task :checkstyle do
-  system 'rubocop -r rubocop/formatter/checkstyle_formatter -R --format Rubocop::Formatter::CheckstyleFormatter --out tmp/checkstyle.xml lib spec'
+  system 'rubocop -r rubocop/formatter/checkstyle_formatter --format Rubocop::Formatter::CheckstyleFormatter --out tmp/checkstyle.xml lib spec'
 end
