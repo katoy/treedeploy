@@ -37,7 +37,7 @@ module FileMode
   # 493 -> "755"
   def int_to_oct(v)
     fail "invalid #{v}" if (v < 0) || (v > 0777)
-    sprintf('%#03o', v)[-3..-1]
+    format('%#03o', v)[-3..-1]
   end
 
   # シンボル表記を 8 進表記に変換する。

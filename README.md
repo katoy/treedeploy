@@ -10,13 +10,13 @@
 これは、File 階層中の部分セットを抜き出し かつ ファイルの属性(オーナー、グループ、プロテクション) を設定するコマンドラインツールです。
 
 使用場面の例としては、 
-   RubyOnRails のプロジェクトフィアル群のなかから、アプリケーションの動作に必要なものだけを取り出してサーバーに配置する
-といった事が考えられます。
+   RubyOnRails のプロジェクトフィアル群のなかから、アプリケーションの動作に必要なものだけを取り出してサーバーに配置する  
+といった事が考えられます。  
 
-配布するファイル一覧とファイル属性は、 gnu の tree コマンドの出力を そのままを利用できます。
+配布するファイル一覧とファイル属性は、 gnu の tree コマンドの出力を そのままを利用できます。  
 
-配置ファイルイメージを実際につくりあげてから、tree コマンドでファイル一覧をとれば、それをそのままファイル配置ツールに利用できます。
-したがって、ファイルの列挙 と その続映の一覧を作成を人手で行った場合に比べて、漏れ や ファイル属性の記載間違いが発生する可能性が少なくなります。
+配置ファイルイメージを実際につくりあげてから、tree コマンドでファイル一覧をとれば、それをそのままファイル配置ツールに利用できます。  
+したがって、ファイルの列挙 と その続映の一覧を作成を人手で行った場合に比べて、漏れ や ファイル属性の記載間違いが発生する可能性が少なくなります。  
 
 インストール
 ============
@@ -46,10 +46,10 @@
       treedeploy repair parent folder treelist    # parent/folder 以下を treelist の設定に修繕する
     
     
-    $ treedeploy deploy コピー元の親フォルダ名  抽出先の親フォルダ名  対象フォルダ名  吹き出すファイル一覧ファイル名
+    $ treedeploy deploy コピー元の親フォルダ名  抽出先の親フォルダ名  対象フォルダ名  抜き出すファイル一覧ファイル名
     
     gem install せずに実行する場合:
-    $ ruby lib/treedeploy/treedeploy.rb コピー元の親フォルダ名  抽出先の親フォルダ名  対象フォルダ名  吹き出すファイル一覧ファイル名
+    $ ruby lib/treedeploy/treedeploy.rb コピー元の親フォルダ名  抽出先の親フォルダ名  対象フォルダ名  抜き出すファイル一覧ファイル名
 
 
 例：  $ treedeploy deploy srcFolder destFolder cont  tree.txt
@@ -83,8 +83,8 @@ rake のタスク
 
 * rake spec
 
-テストを実行します。
-coverage/index.html, coverage/rdoc/index.html でカバレッジ結果を閲覧できます。
+テストを実行します。  
+coverage/index.html, coverage/rdoc/index.html でカバレッジ結果を閲覧できます。  
 
 * rake yard
 
@@ -93,7 +93,7 @@ doc/index.html  を open することでも閲覧できます。
 
 * rake checkstyle
 
-rubocop で lib/*, spec/* をチェックします。
+rubocop で lib/*, spec/* をチェックします。  
 
 
 * クラス図の作成
@@ -110,8 +110,8 @@ break したい箇所に
 
     binding.pry
 
-と書いて、rake sepc を実行してください 。
-(rspec -r pry ...や ruby -r pry ...  としても break します。)
+と書いて、rake sepc を実行してください 。  
+(rspec -r pry ...や ruby -r pry ...  としても break します。)  
 
 
 TODO

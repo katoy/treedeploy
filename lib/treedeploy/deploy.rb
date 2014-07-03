@@ -160,9 +160,9 @@ class Deploy
     attr = ''
 
     attr = append_str(attr, "#{props[:type]}#{props[:mode]}")  if options[:protections]
-    attr = append_str(attr, sprintf('%-8s', props[:user]))     if options[:owner]
-    attr = append_str(attr, sprintf('%-8s', props[:group]))    if options[:group]
-    attr = append_str(attr, sprintf('%12d', props[:size]))     if options[:size]
+    attr = append_str(attr, format('%-8s', props[:user]))     if options[:owner]
+    attr = append_str(attr, format('%-8s', props[:group]))    if options[:group]
+    attr = append_str(attr, format('%12d', props[:size]))     if options[:size]
 
     ans = append_str(ans, "[#{attr}]")  if attr != ''
 

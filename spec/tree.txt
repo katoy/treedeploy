@@ -1,0 +1,2 @@
+[drwxr-xr-x katoy    staff   ] "./bin"
+[-rwxr-xr-x katoy    staff   ] "./bin/treedeploy"

@@ -9,11 +9,10 @@ group :test do
   gem 'coveralls', require: false
   gem 'yard', require: false
   gem 'redcarpet', require: false
-  gem 'pry-debugger', require: false
   gem "metric_fu", require: false
 end
 
-gem 'pry-debugger', require: false
+gem 'pry-byebug'
 gem 'hirb-unicode', require: false
 
 gem 'rubocop', require: false

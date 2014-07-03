@@ -86,19 +86,19 @@ describe Deploy do
     props = d.parse("  ─ [drwxr-xr-x #{user}  #{group}  ] \"no-exist\"")
     expect {
       d.copy_file('.', './tmp', props)
-    }.to raise_error(Errno::ENOENT, 'No such file or directory - ./no-exist')
+    }.to raise_error(Errno::ENOENT)
     expect {
       d.get_props_fullpath('tmp/no-exist')
-    }.to raise_error(Errno::ENOENT, 'No such file or directory - tmp/no-exist')
+    }.to raise_error(Errno::ENOENT)
     expect {
       d.set_props_fullpath('tmp/no-exist', props)
-    }.to raise_error(Errno::ENOENT, 'No such file or directory - tmp/no-exist')
+    }.to raise_error(Errno::ENOENT)
 
     ret = d.check_file('.', nil, props)
-    expect("#{ret}").to eq('No such file or directory - ./no-exist')
+    expect("#{ret}").to eq('No such file or directory @ rb_file_s_lstat - ./no-exist')
 
     ret = d.repair_file('.', nil, props)
-    expect("#{ret}").to eq('No such file or directory - ./no-exist')
+    expect("#{ret}").to eq('No such file or directory @ rb_file_s_lstat - ./no-exist')
   end
 
   specify 'deploy, check, repair' do
